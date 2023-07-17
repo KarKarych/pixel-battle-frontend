@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="overlay">
+    <div class="buttons">
+      <button class="button-round" (click)="zoomOut()">
+        +
+      </button>
+      <button class="button-round" (click)="zoomIn()">
+        -
+      </button>
+    </div>
+    <div class="controls">
+      <ngx-colors
+        ngx-colors-trigger [hideTextInput]="true"
+        [(ngModel)]="selectedColor"
+        format="hex"
+        colorPickerControls="no-alpha">
+      </ngx-colors>
+      <span class="seconds-left" *ngIf="timer.secondsLeft > 0">{{ timer.secondsLeft }}s</span>
+      <button (click)="setToPixel()" *ngIf="timer.secondsLeft <= 0" class="set-button">OK</button>
+    </div>
+  </div>
+  <canvas #canvas class="canvas"
+          (mousedown)="mouseDown($event)"
+          (mouseup)="mouseUp($event)"
+          (mousemove)="mouseMove($event)"></canvas>
+</div>
+

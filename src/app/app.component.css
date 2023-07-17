@@ -1,0 +1,19 @@
+nav{
+  position: absolute;
+  color: orange;
+  text-align: center;
+  padding: 10px 10px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+
+.notify{
+  font-size: 15px;
+  font-family: 'Helvetica', sans-serif;
+  position: absolute;
+  z-index: 1000;
+  width: 100vw;
+  text-align: center;
+  color: white;
+}
