@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core'
 import {NotifyService} from './notify.service'
-import {RxStompService} from "../socket/rx-stomp.service"
+import {RxStompService} from "./socket/rx-stomp.service"
 import {Observable, Subscription} from "rxjs"
 import {Message} from '@stomp/stompjs'
-import {HttpClient} from "@angular/common/http";
-import {Field} from "../main/model/Field";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Field} from "../model/Field";
+import {CookieService} from "ngx-cookie-service";
+import {CsrfToken} from "../model/CsrfToken";
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +23,10 @@ export class ApiService {
   constructor(
     private notifyService: NotifyService,
     private rxStompService: RxStompService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cookieService: CookieService
   ) {
-    this.backendURL = `http://localhost:8085/api/fields`;
+    this.backendURL = `/backend/api`;
   }
 
   connect() {
@@ -62,16 +65,20 @@ export class ApiService {
   }
 
   getField(): Observable<Field> {
-    return this.http.get<Field>(this.backendURL + `/main`);
+    return this.http.get<Field>(this.backendURL + `/fields/main`);
   }
 
   sendCoordinates(row: number, column: number, color: string) {
-    this.http.post<void>(this.backendURL + "/coordinates",
+    let headers = new HttpHeaders()
+      .set('X-XSRF-TOKEN', localStorage.getItem(`csrf`) || "blank")
+    this.http.post<void>(this.backendURL + "/fields/coordinates",
       {
         row: row,
         column: column,
-        color: color,
-        userId: "df8932d9-676c-4053-8d05-3ab505c30291"
+        color: color
+      },
+      {
+        headers: headers
       })
       .subscribe({
         error: error => {
@@ -116,5 +123,33 @@ export class ApiService {
 
   closeSocket() {
     this.topicSubscription.unsubscribe()
+  }
+
+  authenticate(credentials: { password: string; username: string }, param2: () => void) {
+    this.http.post<CsrfToken>(this.backendURL + "/login",
+      {
+        login: credentials.username,
+        password: credentials.password
+      })
+      .subscribe({
+        next: res => {
+          localStorage.setItem(`csrf`, res.csrf)
+        },
+        error: error => {
+          console.log(error)
+        }
+      })
+  }
+
+  logout() {
+    this.http.post<void>(this.backendURL + "/logout", {})
+      .subscribe({
+        next: res => {
+          this.cookieService.deleteAll()
+        },
+        error: error => {
+          console.log(error)
+        }
+      })
   }
 }

@@ -7,14 +7,17 @@ import {MainComponent} from './main/main.component';
 import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxColorsModule} from 'ngx-colors';
-import {rxStompServiceFactory} from "./socket/rx-stomp-service-factory";
-import {RxStompService} from "./socket/rx-stomp.service";
+import {rxStompServiceFactory} from "./service/socket/rx-stomp-service-factory";
+import {RxStompService} from "./service/socket/rx-stomp.service";
 import {HttpClientModule} from "@angular/common/http";
+import { LoginComponent } from './components/login/login.component';
+import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import {HttpClientModule} from "@angular/common/http";
     {
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
-    }
+    },
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

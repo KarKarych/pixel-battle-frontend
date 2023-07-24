@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core'
 import {NotifyService} from '../service/notify.service'
 import {ApiService} from '../service/api.service'
-import {SendingTimer} from './util/SendingTimer'
+import {SendingTimer} from '../util/SendingTimer'
 
 @Component({
   selector: `app-main`,
